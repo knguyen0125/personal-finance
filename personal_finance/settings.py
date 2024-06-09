@@ -2,8 +2,8 @@ import environ
 from pathlib import Path
 
 env = environ.Env()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+env.read_env(str(BASE_DIR / ".env"))
 
 SECRET_KEY = env.str("SECRET_KEY")
 
@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "slippers",
+    "pf_account",
 ]
 
 MIDDLEWARE = [
@@ -85,6 +86,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+AUTH_USER_MODEL = "pf_account.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -102,13 +104,33 @@ USE_TZ = True
 
 STATIC_HOST = env.str("STATIC_HOST", default="")
 STATIC_URL = STATIC_HOST + "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+if env.bool("USE_S3", default=False):
+    MEDIA_STORAGE = "storages.backends.s3.S3Storage"
+    AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
+    if env.str("AWS_ACCESS_KEY_ID"):
+        AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+        AWS_SESSION_TOKEN = env.str("AWS_SESSION_TOKEN", default=None)
+    AWS_S3_CUSTOM_DOMAIN = env.str("AWS_S3_CUSTOM_DOMAIN", default=None)
+    AWS_CLOUDFRONT_KEY = env.str("AWS_CLOUDFRONT_KEY", default=None)
+    AWS_CLOUDFRONT_KEY_ID = env.str("AWS_CLOUDFRONT_KEY_ID", default=None)
+else:
+    MEDIA_STORAGE = "django.core.files.storage.FileSystemStorage"
+    MEDIA_ROOT = BASE_DIR / "media"
+    MEDIA_HOST = env.str("MEDIA_HOST", default="")
+    MEDIA_URL = MEDIA_HOST + "/media/"
+
 STORAGES = {
+    "default": {
+        "BACKEND": MEDIA_STORAGE,
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
-    }
+    },
 }
 
 EMAIL_CONFIG = env.email()
