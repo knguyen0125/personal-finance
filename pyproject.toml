@@ -25,3 +25,6 @@ dev = [
 ]
 [tool.pdm]
 distribution = false
+
+[tool.pdm.scripts]
+post_install = "pre-commit install"
