@@ -65,6 +65,10 @@ class Transaction(models.Model):
 
         self.save()
 
+        # Remove all existing entries
+        self.entry_set.all().delete()
+
+        # Create new entries
         for entry_data in entries_data:
             Entry.objects.create(transaction=self, **entry_data)
 
