@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "slippers",
     "pf_account",
+    "pf_accounting",
 ]
 
 MIDDLEWARE = [
