@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 import environ
 from pathlib import Path
 
@@ -31,6 +32,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -93,6 +95,15 @@ AUTH_USER_MODEL = "pf_account.User"
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
+
+LOCALE_PATHS = [
+    BASE_DIR / "locale",
+]
+
+LANGUAGES = [
+    ("en", _("English")),
+    ("vi", _("Vietnamese")),
+]
 
 TIME_ZONE = "UTC"
 

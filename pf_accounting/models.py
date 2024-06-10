@@ -1,4 +1,5 @@
-from django.db import models
+from django.core.exceptions import ValidationError
+from django.db import models, transaction as db_transaction
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
@@ -52,6 +53,20 @@ class Transaction(models.Model):
 
     def __str__(self):
         return self.description
+
+    @db_transaction.atomic
+    def save_with_entries(self, entries_data):
+        total_amount = sum(entry["amount"] for entry in entries_data)
+
+        if total_amount != 0:
+            raise ValidationError(
+                _("The sum of all related Entry amounts must be zero.")
+            )
+
+        self.save()
+
+        for entry_data in entries_data:
+            Entry.objects.create(transaction=self, **entry_data)
 
 
 class Entry(models.Model):
