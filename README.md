@@ -9,3 +9,5 @@ This is a personal finance / budgeting app for couple.
 - [] Add incomes / expenses
 - [] Add budget
 - [] Reconciliation
+- [] Notify partners of new transactions
+  - [] Should be able to set a minimum amount for notification
