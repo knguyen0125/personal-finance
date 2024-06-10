@@ -11,16 +11,20 @@ repos:
     # Run the linter.
     - id: ruff
       args: ['--fix']
+      stages: [pre-commit]
     # Run the formatter.
     - id: ruff-format
+      stages: [pre-commit]
 # Make sure requirements.txt is up to date.
 - repo: https://github.com/pdm-project/pdm
   rev: 2.15.1
   hooks:
     - id: pdm-lock-check
+      stages: [pre-commit]
     - id: pdm-export
       args: ['-o', 'requirements.txt', '--without-hashes']
       files: ^pdm.lock$
+      stages: [pre-commit]
 # Make sure
 - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
   rev: v9.16.0
